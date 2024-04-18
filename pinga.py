@@ -1,9 +1,6 @@
 import pygame
 import random
 
-def coresAleatorias():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
 # Cria uma nova bola
 def novaBola():
     cores = {
@@ -13,7 +10,7 @@ def novaBola():
         4: (255, 255, 0),
         5: (255, 0, 255),
         6: (0, 255, 255),
-        7: (255, 255, 255),
+        7: (255, 165, 0),
         8: (0, 0, 0),
         9: (128, 128, 128),
         10: (128, 0, 0),
@@ -29,7 +26,8 @@ def novaBola():
         "velocidade": velocidade,
         "cor": cor,
         "tamanho": tamanho,
-        "vidas": vidas
+        "vidas": vidas,
+        "direcao": pygame.Vector2(1, 1)
     }
 
 pygame.init()
@@ -47,8 +45,6 @@ relogio = pygame.time.Clock()
 cor = (255, 0, 0)
 posicao = [150, 60]
 raio = 50
-sobeoudesce = 1
-esquerdaoudireita = 1
 velocidade = 0
 cor_tela = (255, 255, 255)
 
@@ -95,44 +91,28 @@ while True:
         )
         
         # Movimenta a bola com a velocidade e direção
-        bola["posicao"][0] += bola["velocidade"] * esquerdaoudireita
-        bola["posicao"][1] += bola["velocidade"] * sobeoudesce
+        bola["posicao"][0] += bola["velocidade"] * bola["direcao"].x
+        bola["posicao"][1] += bola["velocidade"] * bola["direcao"].y
 
         # Verifica se a bola bateu no eixo X
         if bola["posicao"][0] >= tamanho[0] - bola["tamanho"]:
             # Reposiciona a bola para não sair da tela
             bola["posicao"][0] = tamanho[0] - bola["tamanho"]
-            esquerdaoudireita = -1
+            bola["direcao"].x = -1
         elif bola["posicao"][0] <= bola["tamanho"]:
             # Reposiciona a bola para não sair da tela
             bola["posicao"][0] = bola["tamanho"]
-            esquerdaoudireita = 1
+            bola["direcao"].x = 1
 
         # Verifica se a bola bateu no eixo Y
         if bola["posicao"][1] >= tamanho[1] - bola["tamanho"]:
             # Reposiciona a bola para não sair da tela
             bola["posicao"][1] = tamanho[1] - bola["tamanho"]
-            sobeoudesce = -1
+            bola["direcao"].y = -1
         elif bola["posicao"][1] <= bola["tamanho"]:
             # Reposiciona a bola para não sair da tela
             bola["posicao"][1] = bola["tamanho"]
-            sobeoudesce = 1
-
-    # # Verifica se a bola bateu no eixo Y
-    # if posicao[1] >= 550:
-    #     sobeoudesce = -1
-    #     cor, cor_tela = coresAleatorias()
-    # elif posicao[1] <= 50:
-    #     sobeoudesce = 1
-    #     cor, cor_tela = coresAleatorias()
-
-    # # Verifica se a bola bateu no eixo X
-    # if posicao[0] >= 750:
-    #     esquerdaoudireita = -1
-    #     cor, cor_tela = coresAleatorias()
-    # elif posicao[0] <= 50:
-    #     esquerdaoudireita = 1
-    #     cor, cor_tela = coresAleatorias()
+            bola["direcao"].y = 1
 
     #########################################
     # Atualiza a tela para exibir o que foi desenhado
