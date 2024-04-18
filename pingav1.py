@@ -46,4 +46,4 @@ while True:
     pygame.display.update()
 
     #controla o FPS
-    relogio.tick(45)
+    relogio.tick(60)
