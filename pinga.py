@@ -32,6 +32,28 @@ def novaBola():
         "direcao": pygame.Vector2(1, 1)
     }
 
+def verificaCliqueBolinhas(posicao, listaBolas):
+    for bola in listaBolas: # Vai verificar bolinha por bolinha
+        # Desenha um retangulo temporário para verificar se o click foi dentro da bola
+        retanguloTemporario = pygame.draw.circle(
+            tela, 
+            bola["cor"], 
+            bola["posicao"],
+            bola["tamanho"]
+        )
+
+        # Verifica se o click foi dentro do retangulo
+        recebeuClick = retanguloTemporario.collidepoint(posicao)
+
+        # Apaga o retangulo temporário
+        del retanguloTemporario
+
+        if recebeuClick: # Se recebeu o click
+            bola["vidas"] -= 1
+
+        if bola["vidas"] <= 0: # Se as vidas acabaram
+            listaBolas.remove(bola) # Remove a bola da lista
+
 # Inicializa o Pygame
 pygame.init()
 # Configurações da tela
@@ -48,7 +70,6 @@ relogio = pygame.time.Clock()
 cor = (255, 0, 0)
 posicao = [150, 60]
 raio = 50
-velocidade = 0
 cor_tela = (255, 255, 255)
 
 # Lista de bolas que vão ser desenhadas e movimentadas
@@ -57,8 +78,8 @@ listaBolas = []
 # Evento para o tempo
 novaBolaEvent = pygame.USEREVENT + 1
 
-# Cria o evento a cada 10 segundos
-pygame.time.set_timer(novaBolaEvent, 500)
+# Cria o evento a cada 2 segundos
+pygame.time.set_timer(novaBolaEvent, 5000)
 
 # LOOP PRINCIPAL
 while True:
@@ -73,12 +94,12 @@ while True:
             pygame.quit() # Fecha o Pygame
             exit() # Fecha o programa
 
-        # Verifica se o evento é de tecla pressionada
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_UP: # Se a tecla for a seta para cima
-                velocidade += 1
-            elif evento.key == pygame.K_DOWN: # Se a tecla for a seta para baixo
-                velocidade -= 1
+        # Verifica se aconteceu o click do mouse
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            if evento.button == 1: # Botão esquerdo do mouse
+                # Verificar se o click foi dentro de algum circulo
+                # Passa a posição do click para a função verificaCliqueBolinha
+                verificaCliqueBolinhas(evento.pos, listaBolas)
     #########################################
 
     # Pinta a tela
