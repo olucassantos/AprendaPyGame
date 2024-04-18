@@ -1,5 +1,5 @@
-import pygame
-import random
+import pygame # Importa a biblioteca Pygame
+import random # Importa a biblioteca random (para gerar números aleatórios)
 
 # Cria uma nova bola
 def novaBola():
