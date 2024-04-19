@@ -33,6 +33,8 @@ def novaBola():
     }
 
 def verificaCliqueBolinhas(posicao, listaBolas):
+    global pontuacao # Variável global para alterar a pontuação
+
     for bola in listaBolas: # Vai verificar bolinha por bolinha
         # Desenha um retangulo temporário para verificar se o click foi dentro da bola
         retanguloTemporario = pygame.draw.circle(
@@ -52,6 +54,7 @@ def verificaCliqueBolinhas(posicao, listaBolas):
             bola["vidas"] -= 1
 
         if bola["vidas"] <= 0: # Se as vidas acabaram
+            pontuacao += 1 # Aumenta a pontuação
             listaBolas.remove(bola) # Remove a bola da lista
 
 # Inicializa o Pygame
@@ -77,6 +80,12 @@ listaBolas = []
 
 # Evento para o tempo
 novaBolaEvent = pygame.USEREVENT + 1
+
+pontuacao = 0
+
+# Cria uma fonte
+fonte = pygame.font.Font(None, 300)
+fonteBolinha = pygame.font.Font(None, 15)
 
 # Cria o evento a cada 2 segundos
 pygame.time.set_timer(novaBolaEvent, 5000)
@@ -105,6 +114,11 @@ while True:
     # Pinta a tela
     tela.fill(cor_tela)
 
+    # Desenha a pontuação na tela
+    texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
+    texto_rect = texto.get_rect(center=(400, 300)) # Cria um retangulo para o texto
+    tela.blit(texto, texto_rect) # Desenha o texto na tela
+
     # Processa a lista de bolas, desenhando e movendo
     for bola in listaBolas:
         # Desenhar a bola na tela
@@ -114,7 +128,11 @@ while True:
             bola["posicao"],
             bola["tamanho"]
         )
-        
+
+        textoBolinha = fonteBolinha.render(f"{bola['vidas']}", True, (0, 0, 0))
+        textoBolinhaRect = textoBolinha.get_rect(center=bola["posicao"])
+        tela.blit(textoBolinha, textoBolinhaRect)
+
         # Movimenta a bola com a velocidade e direção
         bola["posicao"][0] += bola["velocidade"] * bola["direcao"].x
         bola["posicao"][1] += bola["velocidade"] * bola["direcao"].y
