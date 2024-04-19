@@ -133,7 +133,7 @@ while True:
         tela.blit(texto, texto_rect)
 
         texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
-        texto_rect = texto.get_rect(center=(400, 450)) # Cria um retangulo para o texto
+        texto_rect = texto.get_rect(center=(400, 390)) # Cria um retangulo para o texto
         tela.blit(texto, texto_rect) # Desenha o texto na tela
 
         texto = fonteBolinha.render("Aperte espaço para recomeçar...", True, (0, 0, 0))
