@@ -91,7 +91,7 @@ fonteGameOver = pygame.font.Font(None, 180)
 jogoAcabou = False
 
 # Cria o evento a cada 2 segundos
-pygame.time.set_timer(novaBolaEvent, 2000)
+pygame.time.set_timer(novaBolaEvent, 5000)
 
 # LOOP PRINCIPAL
 while True:
