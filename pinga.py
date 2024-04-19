@@ -118,6 +118,7 @@ while True:
                 jogoAcabou = False
                 listaBolas = []
                 listaBolas.append(novaBola())
+                pontuacao = 0
 
     #########################################
 
