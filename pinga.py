@@ -86,9 +86,12 @@ pontuacao = 0
 # Cria uma fonte
 fonte = pygame.font.Font(None, 300)
 fonteBolinha = pygame.font.Font(None, 15)
+fonteGameOver = pygame.font.Font(None, 180)
+
+jogoAcabou = False
 
 # Cria o evento a cada 2 segundos
-pygame.time.set_timer(novaBolaEvent, 5000)
+pygame.time.set_timer(novaBolaEvent, 2000)
 
 # LOOP PRINCIPAL
 while True:
@@ -109,53 +112,78 @@ while True:
                 # Verificar se o click foi dentro de algum circulo
                 # Passa a posição do click para a função verificaCliqueBolinha
                 verificaCliqueBolinhas(evento.pos, listaBolas)
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                jogoAcabou = False
+                listaBolas = []
+                listaBolas.append(novaBola())
+
     #########################################
 
     # Pinta a tela
     tela.fill(cor_tela)
 
-    # Desenha a pontuação na tela
-    texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
-    texto_rect = texto.get_rect(center=(400, 300)) # Cria um retangulo para o texto
-    tela.blit(texto, texto_rect) # Desenha o texto na tela
+    # Verifica se o jogo acabou
+    if len(listaBolas) >= 6: # Se tiver 6 bolas na tela
+        jogoAcabou = True
+        # Desenha a mensagem de game over
+        texto = fonteGameOver.render("Você Perdeu", True, (255, 0, 0))
+        texto_rect = texto.get_rect(center=(400, 200))
+        tela.blit(texto, texto_rect)
 
-    # Processa a lista de bolas, desenhando e movendo
-    for bola in listaBolas:
-        # Desenhar a bola na tela
-        circulo = pygame.draw.circle(
-            tela, 
-            bola["cor"], 
-            bola["posicao"],
-            bola["tamanho"]
-        )
+        texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
+        texto_rect = texto.get_rect(center=(400, 450)) # Cria um retangulo para o texto
+        tela.blit(texto, texto_rect) # Desenha o texto na tela
 
-        textoBolinha = fonteBolinha.render(f"{bola['vidas']}", True, (0, 0, 0))
-        textoBolinhaRect = textoBolinha.get_rect(center=bola["posicao"])
-        tela.blit(textoBolinha, textoBolinhaRect)
+        texto = fonteBolinha.render("Aperte espaço para recomeçar...", True, (0, 0, 0))
+        texto_rect = texto.get_rect(center=(400, 550))
+        tela.blit(texto, texto_rect)
 
-        # Movimenta a bola com a velocidade e direção
-        bola["posicao"][0] += bola["velocidade"] * bola["direcao"].x
-        bola["posicao"][1] += bola["velocidade"] * bola["direcao"].y
+    if not jogoAcabou:
 
-        # Verifica se a bola bateu no eixo X
-        if bola["posicao"][0] >= tamanho[0] - bola["tamanho"]:
-            # Reposiciona a bola para não sair da tela
-            bola["posicao"][0] = tamanho[0] - bola["tamanho"]
-            bola["direcao"].x = -1 # Inverte a direção da bola
-        elif bola["posicao"][0] <= bola["tamanho"]:
-            # Reposiciona a bola para não sair da tela
-            bola["posicao"][0] = bola["tamanho"]
-            bola["direcao"].x = 1 # Inverte a direção da bola
+        # Desenha a pontuação na tela
+        texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
+        texto_rect = texto.get_rect(center=(400, 300)) # Cria um retangulo para o texto
+        tela.blit(texto, texto_rect) # Desenha o texto na tela
 
-        # Verifica se a bola bateu no eixo Y
-        if bola["posicao"][1] >= tamanho[1] - bola["tamanho"]:
-            # Reposiciona a bola para não sair da tela
-            bola["posicao"][1] = tamanho[1] - bola["tamanho"]
-            bola["direcao"].y = -1 # Inverte a direção da bola
-        elif bola["posicao"][1] <= bola["tamanho"]:
-            # Reposiciona a bola para não sair da tela
-            bola["posicao"][1] = bola["tamanho"]
-            bola["direcao"].y = 1 # Inverte a direção da bola
+        # Processa a lista de bolas, desenhando e movendo
+        for bola in listaBolas:
+            # Desenhar a bola na tela
+            circulo = pygame.draw.circle(
+                tela, 
+                bola["cor"], 
+                bola["posicao"],
+                bola["tamanho"]
+            )
+
+            textoBolinha = fonteBolinha.render(f"{bola['vidas']}", True, (0, 0, 0))
+            textoBolinhaRect = textoBolinha.get_rect(center=bola["posicao"])
+            tela.blit(textoBolinha, textoBolinhaRect)
+
+            # Movimenta a bola com a velocidade e direção
+            bola["posicao"][0] += bola["velocidade"] * bola["direcao"].x
+            bola["posicao"][1] += bola["velocidade"] * bola["direcao"].y
+
+            # Verifica se a bola bateu no eixo X
+            if bola["posicao"][0] >= tamanho[0] - bola["tamanho"]:
+                # Reposiciona a bola para não sair da tela
+                bola["posicao"][0] = tamanho[0] - bola["tamanho"]
+                bola["direcao"].x = -1 # Inverte a direção da bola
+            elif bola["posicao"][0] <= bola["tamanho"]:
+                # Reposiciona a bola para não sair da tela
+                bola["posicao"][0] = bola["tamanho"]
+                bola["direcao"].x = 1 # Inverte a direção da bola
+
+            # Verifica se a bola bateu no eixo Y
+            if bola["posicao"][1] >= tamanho[1] - bola["tamanho"]:
+                # Reposiciona a bola para não sair da tela
+                bola["posicao"][1] = tamanho[1] - bola["tamanho"]
+                bola["direcao"].y = -1 # Inverte a direção da bola
+            elif bola["posicao"][1] <= bola["tamanho"]:
+                # Reposiciona a bola para não sair da tela
+                bola["posicao"][1] = bola["tamanho"]
+                bola["direcao"].y = 1 # Inverte a direção da bola
 
     #########################################
     # Atualiza a tela para exibir o que foi desenhado
