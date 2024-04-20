@@ -27,7 +27,7 @@ def verificaCliqueBolinhas(posicao, listaBolas):
         # Desenha um retangulo temporário para verificar se o click foi dentro da bola
         retanguloTemporario = pygame.draw.circle(
             tela, 
-            bola["cor"], 
+            (0,0,0), 
             bola["posicao"],
             bola["tamanho"]
         )

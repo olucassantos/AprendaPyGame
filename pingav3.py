@@ -19,7 +19,7 @@ def novaBola():
 
     velocidade = random.randint(1, 10) # Velocidade aleatória
     cor = cores[velocidade] # Cor de acordo com a velocidade
-    tamanho = random.randint(20, 50) # Tamanho aleatório
+    tamanho = random.randint(10, 30) # Tamanho aleatório
     vidas = random.randint(1, 10) # Vidas aleatórias
 
     # Retorna o dicionário com as informações da bola para ser adicionado na lista
@@ -91,7 +91,7 @@ fonteGameOver = pygame.font.Font(None, 180)
 jogoAcabou = False
 
 # Cria o evento a cada 2 segundos
-pygame.time.set_timer(novaBolaEvent, 5000)
+pygame.time.set_timer(novaBolaEvent, 3500)
 
 # LOOP PRINCIPAL
 while True:
