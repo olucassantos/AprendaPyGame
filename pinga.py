@@ -191,14 +191,14 @@ while True:
 
             # Desenha a imagem da bola
             # Divide o tempo por 100 e pega a parte inteira para saber qual imagem desenhar
-            tempoJogo = pygame.time.get_ticks() // 60 
+            tempoJogo = pygame.time.get_ticks() // 100 
             # Calcula o frame da animação com base na quantidade de imagens da lista e o tempo do jogo
             quantidadeImagens = len(listaImagens)
             # Define o frame da animação
             frame = tempoJogo % quantidadeImagens
             # Pega a imagem da lista de imagens
             imagem = listaImagens[frame]
-
+            
             # Desenha a imagem na tela
             tela.blit(imagem, (bola["posicao"][0] - 30, bola["posicao"][1] - 30))
 
