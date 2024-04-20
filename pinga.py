@@ -1,24 +1,12 @@
 import pygame # Importa a biblioteca Pygame
 import random # Importa a biblioteca random (para gerar números aleatórios)
+import os # Importa a biblioteca os (para acessar arquivos do sistema)
 
 # Cria uma nova bola
 def novaBola():
     # Cria um dicionário com as informações da bola
-    cores = {
-        1: (255, 0, 0),
-        2: (0, 255, 0),
-        3: (0, 0, 255),
-        4: (255, 255, 0),
-        5: (255, 0, 255),
-        6: (0, 255, 255),
-        7: (255, 165, 0),
-        8: (0, 0, 0),
-        9: (128, 128, 128),
-        10: (128, 0, 0),
-    }
-
     velocidade = random.randint(1, 10) # Velocidade aleatória
-    cor = cores[velocidade] # Cor de acordo com a velocidade
+    tipo = random.choice(['morcego', 'olho', 'fantasma']) # Tipo aleatório
     tamanho = random.randint(20, 50) # Tamanho aleatório
     vidas = random.randint(1, 10) # Vidas aleatórias
 
@@ -26,7 +14,7 @@ def novaBola():
     return {
         "posicao": [random.randint(200, 600), random.randint(200, 400)],
         "velocidade": velocidade,
-        "cor": cor,
+        "tipo": tipo,
         "tamanho": tamanho,
         "vidas": vidas,
         "direcao": pygame.Vector2(1, 1)
@@ -60,7 +48,7 @@ def verificaCliqueBolinhas(posicao, listaBolas):
 # Inicializa o Pygame
 pygame.init()
 # Configurações da tela
-tamanho = (800, 600)
+tamanho = (960, 540)
 # Cria a tela e define o tamanho
 tela = pygame.display.set_mode(tamanho)
 # Define o título da tela
@@ -92,6 +80,38 @@ jogoAcabou = False
 
 # Cria o evento a cada 2 segundos
 pygame.time.set_timer(novaBolaEvent, 5000)
+
+# Importar as imagens para o jogo
+listaPlanoFundos = []
+for index in range(1, 7):
+    imagem = pygame.image.load(f"assets/planofundo/arvore/{index}.png")
+    imagem = pygame.transform.scale(imagem, tamanho).convert_alpha()
+    listaPlanoFundos.append(imagem)
+
+listaImagensFantasma = []
+listaImagensMorcego = []
+listaImagensOlho = []
+listaImagensFogo = []
+
+
+itens = {
+    'fantasma': 'ghost',
+    'olho': 'fly-eye',
+    'fogo': 'fireball',
+    'morcego': 'bat'
+}
+
+for item in itens:
+    # Conta os arquivos da pasta
+    quantidade = len(os.listdir(f"assets/{item}"))
+
+    for index in range(1, quantidade + 1):
+        imagem = pygame.image.load(f"assets/{item}/{itens[item]}{index}.png")
+        imagem = pygame.transform.scale(imagem, (60, 60)).convert_alpha()
+        if item == 'fantasma': listaImagensFantasma.append(imagem)
+        elif item == 'olho': listaImagensOlho.append(imagem)
+        elif item == 'fogo': listaImagensFogo.append(imagem)
+        elif item == 'morcego': listaImagensMorcego.append(imagem)
 
 # LOOP PRINCIPAL
 while True:
@@ -125,6 +145,10 @@ while True:
     # Pinta a tela
     tela.fill(cor_tela)
 
+    # Desenha o plano de fundo
+    for i in range(len(listaPlanoFundos)):
+        tela.blit(listaPlanoFundos[i], (0,0))
+
     # Verifica se o jogo acabou
     if len(listaBolas) >= 6: # Se tiver 6 bolas na tela
         jogoAcabou = True
@@ -153,10 +177,30 @@ while True:
             # Desenhar a bola na tela
             circulo = pygame.draw.circle(
                 tela, 
-                bola["cor"], 
+                (255, 255, 255),
                 bola["posicao"],
                 bola["tamanho"]
             )
+
+            # Decide quais imagens serão usadas para desenhar a bola
+            listaImagens = []
+            if bola["tipo"] == 'fantasma': listaImagens = listaImagensFantasma
+            elif bola["tipo"] == 'olho': listaImagens = listaImagensOlho
+            elif bola["tipo"] == 'fogo': listaImagens = listaImagensFogo
+            elif bola["tipo"] == 'morcego': listaImagens = listaImagensMorcego
+
+            # Desenha a imagem da bola
+            # Divide o tempo por 100 e pega a parte inteira para saber qual imagem desenhar
+            tempoJogo = pygame.time.get_ticks() // 60 
+            # Calcula o frame da animação com base na quantidade de imagens da lista e o tempo do jogo
+            quantidadeImagens = len(listaImagens)
+            # Define o frame da animação
+            frame = tempoJogo % quantidadeImagens
+            # Pega a imagem da lista de imagens
+            imagem = listaImagens[frame]
+
+            # Desenha a imagem na tela
+            tela.blit(imagem, (bola["posicao"][0] - 30, bola["posicao"][1] - 30))
 
             textoBolinha = fonteBolinha.render(f"{bola['vidas']}", True, (0, 0, 0))
             textoBolinhaRect = textoBolinha.get_rect(center=bola["posicao"])
