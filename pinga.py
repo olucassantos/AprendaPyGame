@@ -79,7 +79,7 @@ fonteGameOver = pygame.font.Font(None, 180)
 jogoAcabou = False
 
 # Cria o evento a cada 2 segundos
-pygame.time.set_timer(novaBolaEvent, 5000)
+pygame.time.set_timer(novaBolaEvent, 3000)
 
 # Importar as imagens para o jogo
 listaPlanoFundos = []
@@ -93,6 +93,8 @@ listaImagensMorcego = []
 listaImagensOlho = []
 listaImagensFogo = []
 
+coracao_imagem = pygame.image.load("assets/heart.png")
+coracao_imagem = pygame.transform.scale(coracao_imagem, (10, 10)).convert_alpha()
 
 itens = {
     'fantasma': 'ghost',
@@ -154,32 +156,33 @@ while True:
         jogoAcabou = True
         # Desenha a mensagem de game over
         texto = fonteGameOver.render("Você Perdeu", True, (255, 0, 0))
-        texto_rect = texto.get_rect(center=(400, 200))
+        texto_rect = texto.get_rect(center=(tamanho[0] // 2, 150))
         tela.blit(texto, texto_rect)
 
-        texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
-        texto_rect = texto.get_rect(center=(400, 390)) # Cria um retangulo para o texto
+        texto = fonte.render(f"{pontuacao}", True, (255, 255, 255)) # Cria o texto
+        texto_rect = texto.get_rect(center=(tamanho[0] // 2, 300)) # Cria um retangulo para o texto
         tela.blit(texto, texto_rect) # Desenha o texto na tela
 
-        texto = fonteBolinha.render("Aperte espaço para recomeçar...", True, (0, 0, 0))
-        texto_rect = texto.get_rect(center=(400, 550))
+        texto = fonteBolinha.render("Aperte espaço para recomeçar...", True, (255, 255, 255))
+        texto_rect = texto.get_rect(center=(tamanho[0] // 2, 400))
         tela.blit(texto, texto_rect)
 
     if not jogoAcabou:
 
         # Desenha a pontuação na tela
-        texto = fonte.render(f"{pontuacao}", True, (0, 0, 0)) # Cria o texto
-        texto_rect = texto.get_rect(center=(400, 300)) # Cria um retangulo para o texto
+        texto = fonte.render(f"{pontuacao}", True, (255, 255, 255)) # Cria o texto
+        centro_tela = (tamanho[0] // 2, tamanho[1] // 2) # Calcula o centro da tela
+        texto_rect = texto.get_rect(center=centro_tela) # Cria um retangulo para o texto
         tela.blit(texto, texto_rect) # Desenha o texto na tela
 
         # Processa a lista de bolas, desenhando e movendo
         for bola in listaBolas:
             # Desenhar a bola na tela
-            circulo = pygame.draw.circle(
-                tela, 
-                (255, 255, 255),
-                bola["posicao"],
-                bola["tamanho"]
+            circulo = pygame.Rect(
+                bola["posicao"][0] - bola["tamanho"], 
+                bola["posicao"][1] - bola["tamanho"], 
+                bola["tamanho"] * 2, 
+                bola["tamanho"] * 2
             )
 
             # Decide quais imagens serão usadas para desenhar a bola
@@ -201,6 +204,10 @@ while True:
             
             # Desenha a imagem na tela
             tela.blit(imagem, (bola["posicao"][0] - 30, bola["posicao"][1] - 30))
+
+            # Desenha as vidas da bola
+            for i in range(bola["vidas"]):
+                tela.blit(coracao_imagem, (bola["posicao"][0] - 30 + (i * 20), bola["posicao"][1] + 30))
 
             textoBolinha = fonteBolinha.render(f"{bola['vidas']}", True, (0, 0, 0))
             textoBolinhaRect = textoBolinha.get_rect(center=bola["posicao"])
